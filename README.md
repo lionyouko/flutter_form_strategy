@@ -1,3 +1,3 @@
 # flutter_form_strategy
 
-A new Flutter project.
+For medium article, branches with strategies described
