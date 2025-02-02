@@ -10,7 +10,7 @@ class LoginEmailTextFormFieldWidget extends StatelessWidget {
         labelText: 'Email',
       ),
       validator: (value) {
-        if (isValidEmail(value)) {
+        if (!isValidEmail(value)) {
           return 'Please write valid e-mail';
         }
         return null;
