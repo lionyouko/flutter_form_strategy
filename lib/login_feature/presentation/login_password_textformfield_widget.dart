@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_strategy/helpers/debouncer.dart';
 
-class LoginPasswordTextFormFieldWidget extends StatelessWidget {
+class LoginPasswordTextFormFieldWidget extends StatefulWidget {
+  const LoginPasswordTextFormFieldWidget({super.key});
+
+  @override
+  State<LoginPasswordTextFormFieldWidget> createState() =>
+      _LoginPasswordTextFormFieldWidgetState();
+}
+
+class _LoginPasswordTextFormFieldWidgetState
+    extends State<LoginPasswordTextFormFieldWidget> {
   final GlobalKey<FormFieldState> passwordFormFieldKey =
       GlobalKey<FormFieldState>();
-  LoginPasswordTextFormFieldWidget({super.key});
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +37,7 @@ class LoginPasswordTextFormFieldWidget extends StatelessWidget {
         return null;
       },
       onChanged: (value) {
-        passwordFormFieldKey.currentState?.validate();
+        _debouncer.run(() => passwordFormFieldKey.currentState?.validate());
       },
     );
   }
