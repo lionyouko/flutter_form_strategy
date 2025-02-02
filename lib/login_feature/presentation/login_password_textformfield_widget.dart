@@ -14,6 +14,7 @@ class _LoginPasswordTextFormFieldWidgetState
   final GlobalKey<FormFieldState> passwordFormFieldKey =
       GlobalKey<FormFieldState>();
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
+  String? _olderPasswordValue;
 
   @override
   void dispose() {
@@ -31,14 +32,30 @@ class _LoginPasswordTextFormFieldWidgetState
         labelText: 'Password',
       ),
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please write a password';
-        }
-        return null;
+        String? result =
+            (!_isEmptyOlderValue(_olderPasswordValue)) && value!.isEmpty
+                ? null
+                : _isEmptyValue(value)
+                    ? 'Please write a password'
+                    : null;
+        _olderPasswordValue =
+            _isEmptyValue(value) ? value : _olderPasswordValue;
+        return result;
       },
       onChanged: (value) {
-        _debouncer.run(() => passwordFormFieldKey.currentState?.validate());
+        _debouncer.run(() {
+          _olderPasswordValue = value.isEmpty ? _olderPasswordValue : value;
+          passwordFormFieldKey.currentState?.validate();
+        });
       },
     );
+  }
+
+  bool _isEmptyOlderValue(String? value) {
+    return value == null || value.isEmpty;
+  }
+
+  bool _isEmptyValue(String? value) {
+    return value == null || value.isEmpty;
   }
 }

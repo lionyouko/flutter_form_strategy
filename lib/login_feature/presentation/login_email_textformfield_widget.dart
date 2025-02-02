@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_strategy/helpers/debouncer.dart';
 
 class LoginEmailTextFormFieldWidget extends StatefulWidget {
-  LoginEmailTextFormFieldWidget({super.key});
+  const LoginEmailTextFormFieldWidget({super.key});
 
   @override
   State<LoginEmailTextFormFieldWidget> createState() =>
@@ -14,6 +14,7 @@ class _LoginEmailTextFormFieldWidgetState
   final GlobalKey<FormFieldState> emailFormFieldKey =
       GlobalKey<FormFieldState>();
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
+  String? _olderEmailValue;
 
   @override
   void dispose() {
@@ -29,13 +30,19 @@ class _LoginEmailTextFormFieldWidgetState
         labelText: 'Email',
       ),
       validator: (value) {
-        if (!isValidEmail(value)) {
-          return 'Please write valid e-mail';
-        }
-        return null;
+        String? result =
+            (!_isEmptyOlderValue(_olderEmailValue)) && value!.isEmpty
+                ? null
+                : !isValidEmail(value)
+                    ? 'Please write valid e-mail'
+                    : null;
+        _olderEmailValue = _isEmptyValue(value) ? value : _olderEmailValue;
+        return result;
       },
-      onChanged: (value) =>
-          _debouncer.run(() => emailFormFieldKey.currentState?.validate()),
+      onChanged: (value) => _debouncer.run(() {
+        _olderEmailValue = value.isEmpty ? _olderEmailValue : value;
+        emailFormFieldKey.currentState?.validate();
+      }),
     );
   }
 
@@ -45,5 +52,13 @@ class _LoginEmailTextFormFieldWidgetState
     }
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return emailRegex.hasMatch(email);
+  }
+
+  bool _isEmptyOlderValue(String? value) {
+    return value == null || value.isEmpty;
+  }
+
+  bool _isEmptyValue(String? value) {
+    return value == null || value.isEmpty;
   }
 }
