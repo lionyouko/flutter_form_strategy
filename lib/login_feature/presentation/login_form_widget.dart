@@ -22,9 +22,9 @@ class LoginFormWidget extends StatelessWidget {
           children: [
             const SizedBox(height: 100),
             const Icon(Icons.person, size: 150),
-            const LoginEmailTextFormFieldWidget(),
+            LoginEmailTextFormFieldWidget(),
             const SizedBox(height: 10),
-            const LoginPasswordTextFormFieldWidget(),
+            LoginPasswordTextFormFieldWidget(),
             const SizedBox(height: 10),
             LoginButtonWidget(
               formKey: formKeyToValidadeForm,

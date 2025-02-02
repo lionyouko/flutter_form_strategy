@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 class LoginEmailTextFormFieldWidget extends StatelessWidget {
-  const LoginEmailTextFormFieldWidget({super.key});
+  final GlobalKey<FormFieldState> emailFormFieldKey =
+      GlobalKey<FormFieldState>();
+  LoginEmailTextFormFieldWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: emailFormFieldKey,
       decoration: const InputDecoration(
         labelText: 'Email',
       ),
       validator: (value) {
-        if (isValidEmail(value)) {
+        if (!isValidEmail(value)) {
           return 'Please write valid e-mail';
         }
         return null;
       },
+      onChanged: (value) => emailFormFieldKey.currentState?.validate(),
     );
   }
 
